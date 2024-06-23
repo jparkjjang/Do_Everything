@@ -1,5 +1,5 @@
 % 이미지 파일 경로
-imageFiles = {"C:\Pro_gramming\dron AI\hw3\사진1.jpg", "C:\Pro_gramming\dron AI\hw3\사진2.jpg", "C:\Pro_gramming\dron AI\hw3\사진3.jpg", "C:\Pro_gramming\dron AI\hw3\사진4.jpg", "C:\Pro_gramming\dron AI\hw3\사진5.jpg"};
+imageFiles = {"C:\Pro_gramming\dron AI\Do_Everything\3차과제\hw3\사진1.jpg", "C:\Pro_gramming\dron AI\Do_Everything\3차과제\hw3\사진2.jpg", "C:\Pro_gramming\dron AI\Do_Everything\3차과제\hw3\사진3.jpg", "C:\Pro_gramming\dron AI\Do_Everything\3차과제\hw3\사진4.jpg", "C:\Pro_gramming\dron AI\Do_Everything\3차과제\hw3\사진5.jpg"};
 
 for i = 1:length(imageFiles)
 
