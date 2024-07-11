@@ -191,8 +191,8 @@ function[rx, ry, rz,rt] = rr(rgp) %rgp==1 -> red// 2 -> green// 3 -> purple
 
     if rgp == 1
         % 붉은색 범위 설정 (Hue 값 대략 0 - 0.05)
-        lower_red = [0, 0.25, 0.25];
-        upper_red = [0.05, 1, 1];
+        lower_red = [0, 0.15, 0.15];
+        upper_red = [0.075, 1, 1];
         
         % 붉은색 마스크 생성
         mask = (hsvImage(:,:,1) >= lower_red(1) & hsvImage(:,:,1) <= upper_red(1)) & ...
@@ -201,8 +201,8 @@ function[rx, ry, rz,rt] = rr(rgp) %rgp==1 -> red// 2 -> green// 3 -> purple
     
     elseif rgp == 2
         % 초록색 범위 설정 (Hue 값 대략 0.25 - 0.45)
-        lower_green = [0.25, 0.2, 0.4];
-        upper_green = [0.45, 1, 1];
+        lower_green = [0.2, 0.1, 0.3];
+        upper_green = [0.5, 1, 1];
         
         % 초록색 마스크 생성
         mask = (hsvImage(:,:,1) >= lower_green(1) & hsvImage(:,:,1) <= upper_green(1)) & ...
@@ -211,8 +211,8 @@ function[rx, ry, rz,rt] = rr(rgp) %rgp==1 -> red// 2 -> green// 3 -> purple
     
     elseif rgp == 3
         % 보라색 범위 설정 (Hue 값 대략 0.75 - 0.85)
-        lower_purple = [0.65, 0.4, 0.25];
-        upper_purple = [0.85, 1, 1];
+        lower_purple = [0.6, 0.3, 0.15];
+        upper_purple = [0.9, 1, 1];
         
         % 보라색 마스크 생성
         mask = (hsvImage(:,:,1) >= lower_purple(1) & hsvImage(:,:,1) <= upper_purple(1)) & ...
@@ -346,47 +346,43 @@ end
 
 
 [x, y, z, t] = circle(0.57, 50, 2000);
-z = z ;
-y = y + 0.5;
+z = z + 0.5;
+y = y + 0.4;
 md(x,y,z,1);
 
 [rx,ry,rz,rt] = rr(1);
-ry = ry + 0.5;
-rz = rz-0.5;
-md(rx,ry,rz,0.2)
+ry = ry + 0.4;
+rz = rz-0.8;
+md(rx,ry,rz,1)
 
 %------------------
 turn(droneObj, deg2rad(135));
 
 [x y z t] = circle(0.46, 20,1600);
-if t == -1
-    md(0,-0.2,0.2);
-    [x y z t] = circle(0.46, 20,1600);
-end
 
-y = y+0.5;
+y = y+0.4;
 z = z-1.5;
 md(x,y,z,1);
 
 [rx,ry,rz, rt] = rr(2);
 if rz >= 1.5
-    ry = ry +0.5;
-    rz = rz - 0.5;
-    md(rx,ry,rz,0.2);
+    ry = ry +0.4;
+    rz = rz - 0.8;
+    md(rx,ry,rz,0.7);
 end
 
 %---------------------------------------
 turn(droneObj, deg2rad(-135));
 
 [x y z t] = circle(0.46, 20,1600);
-y = y +0.5;
+y = y +0.4;
 z = z -1.5;
 md(x,y,z,0.7);
 
 [rx,ry,rz, rt] = rr(3);
 
 if rz >= 1.5
-    ry = ry + 0.5;
+    ry = ry + 0.4;
     rz = 0.3;
     md(rx,ry,rz,0.2);
 end
@@ -395,12 +391,12 @@ end
 turn(droneObj, deg2rad(210));
 
 [x y z t] = circle(0.52, 20,1700);
-y = y +0.5;
+y = y +0.4;
 md(x,y,z,0.5);
 
 %---------------------------------------
 [rx,ry,rz, rt] = rr(1);
-ry = ry + 0.5;
+ry = ry + 0.4;
 rz = rz - 0.75;
 
 if abs(rz) < 0.2
