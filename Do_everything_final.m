@@ -75,9 +75,9 @@ function[x,y,z,t] = circle(radious, minr,maxr)
     hsvImage = rgb2hsv(image);
     
     % 푸른색 범위 설정 (HSV 값 기준)
-    blueMask = (hsvImage(:,:,1) >= 0.5 & hsvImage(:,:,1) <= 0.7) & ...
-               (hsvImage(:,:,2) >= 0.4 & hsvImage(:,:,2) <= 1.0) & ...
-               (hsvImage(:,:,3) >= 0.4 & hsvImage(:,:,3) <= 1.0);
+    blueMask = (hsvImage(:,:,1) >= 0.45 & hsvImage(:,:,1) <= 0.7) & ...
+               (hsvImage(:,:,2) >= 0.25 & hsvImage(:,:,2) <= 1.0) & ...
+               (hsvImage(:,:,3) >= 0.25 & hsvImage(:,:,3) <= 1.0);
         
     % 마스크 적용
     filteredImage = bsxfun(@times, image, cast(blueMask, 'like', image));
@@ -94,40 +94,30 @@ function[x,y,z,t] = circle(radious, minr,maxr)
     
     % imshow(binaryImage)
     
-    
     % 원 감지 (Hough 변환 사용)
-    [centers, radii] = imfindcircles(binaryImage, [50 1000], 'ObjectPolarity', 'dark', 'Sensitivity', 0.97);
-    
-    new_centers = [];
-    new_radii = [];
-    if length(centers(:,1)) == 1
-        new_centers = centers;
-        new_radii = radii;
-    else
-        for i= 1:length(centers(:,1))
-            if (340 <= centers(i,1)) && (centers(i,1) <= 630)
-                new_centers = [new_centers; centers(i,:)];
-                new_radii = [new_radii; radii(i)]
-            end
-        end
-    end
-    [maxValue, maxIndex] = max(new_radii);
-
-
-    
-    % 감지된 원 표시
-    % imshow(image);
-    % hold on;
-    % viscircles(centers, radii, 'EdgeColor', 'b');
-    % title('Detected Circle');
+    [centers, radii] = imfindcircles(binaryImage, [minr maxr], 'ObjectPolarity', 'dark', 'Sensitivity', 0.97);
     
     % 원 중심 좌표
     t = 1;
     try
+        new_centers = [];
+        new_radii = [];
+        if length(centers(:,1)) == 1
+            new_centers = centers;
+            new_radii = radii;
+        else
+            for i= 1:length(centers(:,1))
+                if (340 <= centers(i,1)) && (centers(i,1) <= 630)
+                    new_centers = [new_centers; centers(i,:)];
+                    new_radii = [new_radii; radii(i)]
+                end
+            end
+        end
+        [maxValue, maxIndex] = max(new_radii);
+
         circleCenter = new_centers(maxIndex, :);
-    
-    
-    
+        circleradii = maxValue;
+
         fprintf('Detected circle center: (%.2f, %.2f)\n', circleCenter(1), circleCenter(2));
         
         %-------------------------------------%
@@ -230,48 +220,13 @@ function[rx, ry, rz,rt] = rr(rgp) %rgp==1 -> red// 2 -> green// 3 -> purple
                (hsvImage(:,:,3) >= lower_purple(3) & hsvImage(:,:,3) <= upper_purple(3));
     end
     
-    %green
-    % 초록색 범위 설정 (두 개의 허용치 적용)
-    % lower_green1 = [0.25, 0.4, 0];  % 하한 범위
-    % upper_green1 = [0.35, 1, 1];    % 상한 범위
-    % tolerance1 = 0.05;              % 첫 번째 허용치
-    % 
-    % lower_green2 = [0.55, 0.4, 0];  % 하한 범위
-    % upper_green2 = [0.65, 1, 1];    % 상한 범위
-    % tolerance2 = 0.05;              % 두 번째 허용치
-    % 
-    % % 초록색 마스크 생성
-    % mask1 = (hsvImage(:,:,1) >= (lower_green1(1) - tolerance1) & hsvImage(:,:,1) <= (upper_green1(1) + tolerance1)) & ...
-    %         (hsvImage(:,:,2) >= lower_green1(2) & hsvImage(:,:,2) <= upper_green1(2)) & ...
-    %         (hsvImage(:,:,3) >= lower_green1(3) & hsvImage(:,:,3) <= upper_green1(3));
-    % mask2 = (hsvImage(:,:,1) >= (lower_green2(1) - tolerance2) & hsvImage(:,:,1) <= (upper_green2(1) + tolerance2)) & ...
-    %         (hsvImage(:,:,2) >= lower_green2(2) & hsvImage(:,:,2) <= upper_green2(2)) & ...
-    %         (hsvImage(:,:,3) >= lower_green2(3) & hsvImage(:,:,3) <= upper_green2(3));
-    % redMask = mask1 | mask2;
-    
-    % % 보라색 범위 설정 (두 개의 허용치 적용)
-    % lower_purple1 = [0.65, 0.25, 0.5];    % 하한 범위
-    % upper_purple1 = [0.75, 1, 1];         % 상한 범위
-    % tolerance1 = 0.05;                    % 첫 번째 허용치
-    % 
-    % lower_purple2 = [0.85, 0.25, 0.5];    % 하한 범위
-    % upper_purple2 = [0.95, 1, 1];         % 상한 범위
-    % tolerance2 = 0.05;                    % 두 번째 허용치
-    % 
-    % % 보라색 마스크 생성
-    % mask1 = (hsvImage(:,:,1) >= (lower_purple1(1) - tolerance1) & hsvImage(:,:,1) <= (upper_purple1(1) + tolerance1)) & ...
-    %         (hsvImage(:,:,2) >= lower_purple1(2) & hsvImage(:,:,2) <= upper_purple1(2)) & ...
-    %         (hsvImage(:,:,3) >= lower_purple1(3) & hsvImage(:,:,3) <= upper_purple1(3));
-    % mask2 = (hsvImage(:,:,1) >= (lower_purple2(1) - tolerance2) & hsvImage(:,:,1) <= (upper_purple2(1) + tolerance2)) & ...
-    %         (hsvImage(:,:,2) >= lower_purple2(2) & hsvImage(:,:,2) <= upper_purple2(2)) & ...
-    %         (hsvImage(:,:,3) >= lower_purple2(3) & hsvImage(:,:,3) <= upper_purple2(3));
-    % redMask = mask1 | mask2;
     
     % 결과 표시
 
     % figure;
     % imshow(redMask);
     % title('Red Square Mask');
+
     rt = 1;
     try
         % 바이너리 마스크에서 영역 속성을 추출합니다.
@@ -392,7 +347,7 @@ end
 
 [x, y, z, t] = circle(0.57, 50, 2000);
 z = z ;
-y = y + 0.4;
+y = y + 0.5;
 md(x,y,z,1);
 
 [rx,ry,rz,rt] = rr(1);
@@ -403,19 +358,19 @@ md(rx,ry,rz,0.2)
 %------------------
 turn(droneObj, deg2rad(135));
 
-[x y z t] = circle(0.46, 20,1000);
+[x y z t] = circle(0.46, 20,1600);
 if t == -1
     md(0,-0.2,0.2);
-    [x y z t] = circle(0.46, 20,1000);
+    [x y z t] = circle(0.46, 20,1600);
 end
 
-y = y+0.4;
+y = y+0.5;
 z = z-1.5;
 md(x,y,z,1);
 
 [rx,ry,rz, rt] = rr(2);
 if rz >= 1.5
-    ry = ry +0.4;
+    ry = ry +0.5;
     rz = rz - 0.5;
     md(rx,ry,rz,0.2);
 end
@@ -423,15 +378,15 @@ end
 %---------------------------------------
 turn(droneObj, deg2rad(-135));
 
-[x y z t] = circle(0.46, 20,1500);
-y = y +0.4;
+[x y z t] = circle(0.46, 20,1600);
+y = y +0.5;
 z = z -1.5;
 md(x,y,z,0.7);
 
 [rx,ry,rz, rt] = rr(3);
 
 if rz >= 1.5
-    ry = ry + 0.4;
+    ry = ry + 0.5;
     rz = 0.3;
     md(rx,ry,rz,0.2);
 end
@@ -439,13 +394,13 @@ end
 %------------------------------------------
 turn(droneObj, deg2rad(210));
 
-[x y z t] = circle(0.52, 20,1000);
-y = y +0.4;
+[x y z t] = circle(0.52, 20,1700);
+y = y +0.5;
 md(x,y,z,0.5);
 
 %---------------------------------------
 [rx,ry,rz, rt] = rr(1);
-ry = ry + 0.4;
+ry = ry + 0.5;
 rz = rz - 0.75;
 
 if abs(rz) < 0.2
